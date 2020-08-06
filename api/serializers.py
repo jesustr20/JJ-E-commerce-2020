@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User, Group, Permission
+from .models import Categories, Products, Store, Store_products
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -21,10 +22,12 @@ class GroupSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
         
     #groups = GroupSerializer(many=True)
+    def get_full_name(self, obj):
+        return '%s %s' %(obj.username)
 
     class Meta:
         model = User
-        fields = ['id','password','last_login','is_superuser','username','first_name','last_name','email','is_staff','is_active','date_joined','groups']
+        fields = ['id','username','password','email','is_superuser','is_active','groups']
 
     #codigo crea el usuario y pide la contraseña y devuelve encriptada
     def create(self, validated_data):
@@ -42,10 +45,35 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         return super(UserSerializer, self).update(instance, validated_data)
     
-    
 
     #genera un token personal para cada uno automaticamente - solo para TokenAuthentication
-    @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-    def create_auth_token(sender, instance=None, created=False, **kwargs):
-        if created:
-            Token.objects.create(user=instance)
+    #@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+    #def create_auth_token(sender, instance=None, created=False, **kwargs):
+    #    if created:
+    #        Token.objects.create(user=instance)
+
+class CategoriesSerializer(serializers.ModelSerializer):
+    #user = UserSerializer()
+    class Meta:
+        model = Categories
+        fields = ['id','code','name','description','user']
+
+class ProductsSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    categorie = CategoriesSerializer()
+    class Meta:
+        model = Categories
+        fields = ['id','code','name','description','user','categorie']
+
+class StoreSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    class Meta:
+        model = Store
+        fields = ['id','code','name','description','user']
+
+class Store_productsSerializer(serializers.ModelSerializer):
+    products = ProductsSerializer()
+    store = StoreSerializer()
+    class Meta:
+        model = Store_products
+        fields = ['id','stock','products','store']
