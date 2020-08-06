@@ -22,8 +22,6 @@ class GroupSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
         
     #groups = GroupSerializer(many=True)
-    def get_full_name(self, obj):
-        return '%s %s' %(obj.username)
 
     class Meta:
         model = User
@@ -72,8 +70,8 @@ class StoreSerializer(serializers.ModelSerializer):
         fields = ['id','code','name','description','user']
 
 class Store_productsSerializer(serializers.ModelSerializer):
-    products = ProductsSerializer()
-    store = StoreSerializer()
+    products = ProductsSerializer(many=True)
+    store = StoreSerializer(many=True)
     class Meta:
         model = Store_products
         fields = ['id','stock','products','store']

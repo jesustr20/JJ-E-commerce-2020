@@ -28,7 +28,7 @@ class Products(models.Model):
     class Meta:
         verbose_name = 'Product'
         verbose_name_plural = 'Product'
-        ordering = ['code']
+        ordering = ['name']
     
     def __str__(self):
         return f'{self.name}'
@@ -44,7 +44,7 @@ class Store(models.Model):
     class Meta:
         verbose_name = 'Store'
         verbose_name_plural = 'Store'
-        ordering = ['code']
+        ordering = ['name']
     
     def __str__(self):
         return f'{self.name}'
@@ -52,8 +52,8 @@ class Store(models.Model):
 class Store_products(models.Model):
     id = models.AutoField(primary_key=True)
     stock = models.IntegerField(default=0)
-    products = models.ForeignKey(Products, on_delete=models.CASCADE)
-    store = models.ForeignKey(Store,on_delete=models.CASCADE)
+    products = models.ManyToManyField(Products)
+    store = models.ManyToManyField(Store)
 
     class Meta:
         verbose_name = 'Store_product'

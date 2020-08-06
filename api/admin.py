@@ -12,7 +12,7 @@ class StoreAdmin(admin.ModelAdmin):
     list_display = ['id','code','name','description','user']
 
 class Store_productsAdmin(admin.ModelAdmin):
-    list_display = ['id','stock','products','store']
+    list_display = ['id','stock']
 
 admin.site.register(Categories,CategoriesAdmin)
 admin.site.register(Products,ProductsAdmin)
