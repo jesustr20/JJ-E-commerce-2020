@@ -14,7 +14,7 @@ class PermissionSerializer(serializers.ModelSerializer):
 
 
 class GroupSerializer(serializers.ModelSerializer):
-    #permissions = PermissionSerializer(many = True)
+    permissions = PermissionSerializer(many = True)
     class Meta:
         model = Group
         fields = ['id','name','permissions']
@@ -51,7 +51,7 @@ class UserSerializer(serializers.ModelSerializer):
     #        Token.objects.create(user=instance)
 
 class CategoriesSerializer(serializers.ModelSerializer):
-    #user = UserSerializer()
+    user = UserSerializer()
     class Meta:
         model = Categories
         fields = ['id','code','name','description','user']
@@ -64,14 +64,15 @@ class ProductsSerializer(serializers.ModelSerializer):
         fields = ['id','code','name','description','user','categorie']
 
 class StoreSerializer(serializers.ModelSerializer):
+    product =ProductsSerializer(many=True)
     user = UserSerializer()
     class Meta:
         model = Store
-        fields = ['id','code','name','description','user']
+        fields = ['id','code','name','description','user','product']
 
 class Store_productsSerializer(serializers.ModelSerializer):
-    products = ProductsSerializer(many=True)
-    store = StoreSerializer(many=True)
+    products = ProductsSerializer()
+    store = StoreSerializer()
     class Meta:
         model = Store_products
         fields = ['id','stock','products','store']
